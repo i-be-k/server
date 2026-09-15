@@ -1,0 +1,13 @@
+# Dependency logs
+node_modules/
+dist/
+/public/issued/cert_*.pdf
+
+# Private Configuration Secrets
+.env
+.env.local
+
+# Temporary local execution logs
+/tmp/
+/sandbox/tmp-*/
+*.log

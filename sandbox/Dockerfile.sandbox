@@ -1,0 +1,25 @@
+# Use a lightweight, predictable base image
+FROM alpine:3.20
+
+# Install required test runners, runtimes, and evaluation packages safely
+RUN apk add --no-cache \
+    nodejs \
+    npm \
+    python3 \
+    py3-pip \
+    bash \
+    curl
+
+# Create an unprivileged user to execute the untrusted code safely
+RUN addgroup -S sandboxgroup && adduser -S sandboxuser -G sandboxgroup
+
+# Set up the isolated workspace directories
+WORKDIR /workspace
+COPY run-tests.sh /usr/local/bin/run-tests.sh
+RUN chmod +x /usr/local/bin/run-tests.sh
+
+# Shift control entirely to the unprivileged account to prevent root exploits
+USER sandboxuser
+
+# Keep the script as the immutable entry execution layer
+ENTRYPOINT ["/usr/local/bin/run-tests.sh"]
