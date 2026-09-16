@@ -1,7 +1,12 @@
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from 'url';
 
-// Load variables from the local environment file
+// ✅ Re-create __dirname safely for modern ES Module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load variables from the local environment file safely
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const requiredEnvVariables = [

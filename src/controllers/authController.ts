@@ -3,6 +3,53 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
 import { AuthService } from '../services/authService';
 
+export const handleUserRegistration = async (req: Request, res: Response) => {
+    try {
+        const { fullName, email, password, experienceTier } = req.body;
+
+        // 1. Baseline Request Body Validation
+        if (!fullName || !email || !password || !experienceTier) {
+            return res.status(400).json({ error: 'All configuration payload fields are mandatory.' });
+        }
+
+        const allowedTiers = ['beginner', 'mid-level', 'experienced'];
+        if (!allowedTiers.includes(experienceTier)) {
+            return res.status(400).json({ error: 'Invalid experience tier target profile mapped.' });
+        }
+
+        // 2. Invoke the Business Registration Service Layer
+        const newUserProfile = await AuthService.registerNewUser(fullName, email, password, experienceTier);
+
+        // 3. AUTO-LOGIN EXECUTIONS: Sign an instant JWT token so they don't have to re-login right away
+        const jwtPayload = {
+            id: newUserProfile.id,
+            experienceTier: newUserProfile.experienceTier,
+            assignedSpecialty: newUserProfile.assignedSpecialty
+        };
+
+        const sessionToken = jwt.sign(jwtPayload, String(config.auth.jwtSecret), {
+            expiresIn: Number(config.auth.jwtExpiresIn),
+        });
+
+        console.log(`[Auth Engine] Account deployed successfully. Registered User ID: ${newUserProfile.id}`);
+
+        return res.status(201).json({
+            success: true,
+            message: 'Developer account successfully enrolled into track matrix ecosystem.',
+            token: sessionToken,
+            user: newUserProfile
+        });
+
+    } catch (error: any) {
+        console.error('❌ Registration system tracing crash exception:', error.message);
+    
+        // Check if the thrown error stems from business logic or database crashes
+        const statusCode = error.message.includes('exists') ? 409 : 500;
+        return res.status(statusCode).json({ error: error.message || 'Internal enrollment engine exception error.' });
+    }
+};
+
+
 export const handleUserLogin = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;

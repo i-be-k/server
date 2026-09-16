@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { authenticateJWT, requireTier } from './middleware/authMiddleware';
-import { handleGitHubWebhook } from './controllers/webhookController';
-import taskRoutes from './routes/taskRoutes';
-import authRoutes from './routes/authRoutes';
+import { authenticateJWT, requireTier } from './middleware/authMiddleware.js';
+import { handleGitHubWebhook } from './controllers/webhookController.js';
+import taskRoutes from './routes/taskRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -25,5 +25,5 @@ app.get('/api/v1/tasks/timeline', authenticateJWT, requireTier(['beginner', 'mid
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Intranet infrastructure microservice listening securely on port matches: ${PORT}`);
+    console.log(`🚀 LopeDev infrastructure microservice listening securely on port matches: ${PORT}`);
 });

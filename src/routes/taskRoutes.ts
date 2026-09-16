@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getUserTimelineTasks, startDashboardTask } from '../controllers/taskController';
-import { authenticateJWT, requireTier } from '../middleware/authMiddleware';
+import { getUserTimelineTasks, startDashboardTask } from '../controllers/taskController.js';
+import { authenticateJWT, requireTier } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
