@@ -1,10 +1,10 @@
 {
     "name": "lopedev-server",
     "version": "1.0.0",
-    "main": "dist/index.ts",
     "type": "module",
+    "main": "dist/index.ts",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "dev": "ts-node-dev --node-arg=--experimental-specifier-resolution=node --respawn --transpile-only src/index.ts",
         "build": "tsc"
     },
     "dependencies": {
